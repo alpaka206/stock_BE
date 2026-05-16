@@ -36,8 +36,11 @@ public final class PlatformDtos {
         @NotNull ReportCadence cadence,
         @Email @NotBlank String deliveryEmail,
         @NotBlank String timezone,
-        boolean enabled
+        Boolean enabled
     ) {
+        public boolean enabledOrDefault() {
+            return enabled == null || enabled;
+        }
     }
 
     public record ReportScheduleResponse(

@@ -80,7 +80,7 @@ public class PlatformService {
             request.cadence(),
             request.deliveryEmail(),
             request.timezone(),
-            request.enabled()
+            request.enabledOrDefault()
         );
         return toScheduleResponse(reportScheduleRepository.save(schedule));
     }

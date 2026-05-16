@@ -55,11 +55,32 @@ class WorkspaceApiTests {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.symbol", equalTo("NVDA")));
 
+        mockMvc.perform(post("/materials")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "symbol": "NVDA",
+                      "kind": "NEWS",
+                      "provider": "Alpha Vantage",
+                      "publisher": "Reuters",
+                      "title": "Undated NVIDIA brief",
+                      "summary": "Undated material should not hide dated news.",
+                      "sourceUrl": "https://example.com/nvda-undated",
+                      "sourceKey": "alpha:news:nvda:undated",
+                      "language": "en",
+                      "rawPayload": "{\\"symbol\\":\\"NVDA\\"}"
+                    }
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.symbol", equalTo("NVDA")));
+
         mockMvc.perform(get("/overview"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.sourceRefs", hasSize(greaterThanOrEqualTo(1))))
             .andExpect(jsonPath("$.marketSummary.text", equalTo("Earnings preview stored by backend.")))
-            .andExpect(jsonPath("$.notableNews", hasSize(1)));
+            .andExpect(jsonPath("$.notableNews", hasSize(greaterThanOrEqualTo(1))))
+            .andExpect(jsonPath("$.notableNews[0].headline", equalTo("NVIDIA earnings preview")));
 
         mockMvc.perform(get("/radar"))
             .andExpect(status().isOk())
@@ -72,7 +93,8 @@ class WorkspaceApiTests {
             .andExpect(jsonPath("$.instrument.symbol", equalTo("NVDA")))
             .andExpect(jsonPath("$.latestPrice", equalTo(940.0)))
             .andExpect(jsonPath("$.priceSeries", hasSize(2)))
-            .andExpect(jsonPath("$.issueCards", hasSize(1)));
+            .andExpect(jsonPath("$.issueCards", hasSize(greaterThanOrEqualTo(1))))
+            .andExpect(jsonPath("$.issueCards[0].title", equalTo("NVIDIA earnings preview")));
 
         mockMvc.perform(get("/history").param("symbol", "NVDA").param("range", "3m"))
             .andExpect(status().isOk())
@@ -138,12 +160,12 @@ class WorkspaceApiTests {
                       "locale": "ko",
                       "cadence": "WEEKLY",
                       "deliveryEmail": "user@example.com",
-                      "timezone": "Asia/Seoul",
-                      "enabled": true
+                      "timezone": "Asia/Seoul"
                     }
                     """))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.deliveryEmail", equalTo("user@example.com")));
+            .andExpect(jsonPath("$.deliveryEmail", equalTo("user@example.com")))
+            .andExpect(jsonPath("$.enabled", equalTo(true)));
 
         MvcResult mediaResult = mockMvc.perform(post("/media-assets")
                 .with(csrf())
