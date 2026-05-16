@@ -1,0 +1,20 @@
+name: release-guard
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  release-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require develop release source
+        run: |
+          if [ "${{ github.head_ref }}" != "develop" ]; then
+            echo "main 릴리스 PR은 develop 브랜치에서만 생성합니다."
+            exit 1
+          fi
