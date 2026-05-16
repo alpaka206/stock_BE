@@ -36,3 +36,20 @@
 ## 화면 계약
 
 백엔드는 프런트 화면이 바로 사용할 수 있는 화면 단위 응답을 제공합니다. 아직 저장 데이터가 부족한 경우 값을 꾸며내지 않고 `missingData`와 낮은 `confidence`로 명시합니다.
+
+## 로그인과 토큰 관리
+
+- Google OAuth 성공 시 백엔드가 사용자 계정을 upsert합니다.
+- access token은 HMAC 서명 JWT로 만들고 `HttpOnly` cookie에만 저장합니다.
+- refresh token은 무작위 opaque token으로 만들고 원문은 사용자 브라우저 cookie에만 둡니다.
+- DB에는 refresh token의 SHA-256 hash, 만료 시각, 폐기 시각, user agent, IP를 저장합니다.
+- refresh 요청은 기존 refresh token을 폐기하고 새 refresh token을 발급합니다.
+- 프런트는 token을 localStorage에 저장하지 않고, Next.js route handler나 브라우저 fetch의 cookie 흐름을 사용합니다.
+- CSRF는 유지합니다. 프런트가 mutating 요청을 보낼 때는 `/csrf`로 token을 받은 뒤 header에 싣습니다.
+
+## Swagger/OpenAPI
+
+- Swagger UI: `/swagger-ui.html`
+- OpenAPI JSON: `/v3/api-docs`
+- API는 화면, 저장, 플랫폼, 인증 영역별 tag를 갖습니다.
+- OpenAPI components에는 access/refresh cookie 보안 스키마가 포함됩니다.

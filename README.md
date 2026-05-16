@@ -18,6 +18,8 @@ Next.js는 화면과 BFF 역할에 집중합니다. Python/FastAPI는 메인 백
 
 ## 주요 API
 
+문서는 로컬 실행 후 `http://localhost:8080/swagger-ui.html`에서 확인합니다. 원본 OpenAPI JSON은 `GET /v3/api-docs`입니다.
+
 화면 API:
 
 - `GET /overview`
@@ -46,6 +48,11 @@ Next.js는 화면과 BFF 역할에 집중합니다. Python/FastAPI는 메인 백
 - `GET /localization-jobs`
 - `POST /localization-jobs`
 - `POST /automation/webhooks/{source}`
+- `GET /csrf`
+- `POST /auth/dev-login`
+- `POST /auth/refresh`
+- `POST /auth/logout`
+- `GET /auth/me`
 
 모든 API는 `/api/v1/*` prefix도 함께 지원합니다.
 
@@ -73,6 +80,19 @@ docker compose up --build
 - `media_assets`: 어닝콜, 연준 발표, 실적 발표 오디오/영상
 - `localization_jobs`: Perso 더빙/자막 작업 상태
 - `automation_events`: n8n 등 외부 자동화 이벤트 수신 기록
+- `user_accounts`: Google OAuth 또는 개발용 로그인으로 생성된 사용자 계정
+- `refresh_sessions`: 원문 refresh token이 아닌 해시된 refresh token 세션
+
+## 인증 전략
+
+- 백엔드가 `HttpOnly` cookie로 `stock_access_token`과 `stock_refresh_token`을 발급합니다.
+- access token은 짧게 유지하고 기본 TTL은 15분입니다.
+- refresh token은 30일 기본 TTL을 가지며, 서버 DB에는 SHA-256 hash만 저장합니다.
+- `/auth/refresh` 호출 시 기존 refresh session은 폐기되고 새 refresh token으로 회전합니다.
+- `/auth/logout`은 현재 refresh session을 폐기하고 두 cookie를 모두 삭제합니다.
+- 프런트는 token 원문을 JavaScript 상태나 localStorage에 저장하지 않습니다. Next.js route handler가 필요할 때 `/csrf`를 먼저 호출하고, cookie 기반으로 백엔드에 요청합니다.
+- Google OAuth는 `/oauth2/authorization/google` 진입 후 성공 시 백엔드가 cookie를 설정하고 `AUTH_FRONTEND_CALLBACK_URL`로 redirect하는 구조입니다.
+- 실제 접근 제한은 테스트 편의를 위해 아직 강제하지 않았지만, Swagger에는 cookie 보안 스키마가 문서화되어 있습니다.
 
 ## 환경 변수
 
