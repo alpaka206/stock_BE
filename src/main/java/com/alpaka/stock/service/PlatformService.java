@@ -255,6 +255,7 @@ public class PlatformService {
             job.getId(),
             job.getMediaAsset().getId(),
             job.getProvider(),
+            job.getProviderJobId(),
             job.getTargetLanguage(),
             job.getStatus(),
             job.getDubbedAudioUrl(),

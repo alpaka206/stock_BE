@@ -27,6 +27,9 @@ public class LocalizationJob extends BaseEntity {
     @Column(nullable = false, length = 24)
     private LocalizationStatus status;
 
+    @Column(length = 120)
+    private String providerJobId;
+
     @Column(length = 1000)
     private String dubbedAudioUrl;
 
@@ -35,6 +38,9 @@ public class LocalizationJob extends BaseEntity {
 
     @Column(columnDefinition = "text")
     private String errorMessage;
+
+    @Column(columnDefinition = "text")
+    private String providerPayload;
 
     @Column(nullable = false)
     private OffsetDateTime requestedAt;
@@ -68,6 +74,10 @@ public class LocalizationJob extends BaseEntity {
         return status;
     }
 
+    public String getProviderJobId() {
+        return providerJobId;
+    }
+
     public String getDubbedAudioUrl() {
         return dubbedAudioUrl;
     }
@@ -86,5 +96,27 @@ public class LocalizationJob extends BaseEntity {
 
     public OffsetDateTime getCompletedAt() {
         return completedAt;
+    }
+
+    public void markProcessing(String providerJobId, String providerPayload) {
+        this.status = LocalizationStatus.PROCESSING;
+        this.providerJobId = providerJobId;
+        this.providerPayload = providerPayload;
+        this.errorMessage = null;
+    }
+
+    public void markCompleted(String dubbedAudioUrl, String subtitleUrl, String providerPayload) {
+        this.status = LocalizationStatus.COMPLETED;
+        this.dubbedAudioUrl = dubbedAudioUrl;
+        this.subtitleUrl = subtitleUrl;
+        this.providerPayload = providerPayload;
+        this.completedAt = OffsetDateTime.now();
+        this.errorMessage = null;
+    }
+
+    public void markFailed(String errorMessage, String providerPayload) {
+        this.status = LocalizationStatus.FAILED;
+        this.errorMessage = errorMessage;
+        this.providerPayload = providerPayload;
     }
 }

@@ -98,6 +98,7 @@ public final class PlatformDtos {
         UUID id,
         UUID mediaAssetId,
         String provider,
+        String providerJobId,
         String targetLanguage,
         LocalizationStatus status,
         String dubbedAudioUrl,
@@ -109,6 +110,29 @@ public final class PlatformDtos {
     }
 
     public record LocalizationJobListResponse(List<LocalizationJobResponse> jobs) {
+    }
+
+    public record LocalizationJobSubmitRequest(
+        String sourceLanguageCode,
+        Boolean withLipSync,
+        Integer numberOfSpeakers,
+        String preferredSpeedType
+    ) {
+        public String sourceLanguageCodeOrDefault() {
+            return sourceLanguageCode == null || sourceLanguageCode.isBlank() ? "auto" : sourceLanguageCode;
+        }
+
+        public boolean withLipSyncOrDefault() {
+            return withLipSync != null && withLipSync;
+        }
+
+        public int numberOfSpeakersOrDefault() {
+            return numberOfSpeakers == null || numberOfSpeakers <= 0 ? 1 : numberOfSpeakers;
+        }
+
+        public String preferredSpeedTypeOrDefault() {
+            return preferredSpeedType == null || preferredSpeedType.isBlank() ? "GREEN" : preferredSpeedType;
+        }
     }
 
     public record AutomationWebhookRequest(
