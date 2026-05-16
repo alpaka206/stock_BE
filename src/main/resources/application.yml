@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: stock-be
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/stock}
+    username: ${DATABASE_USERNAME:stock}
+    password: ${DATABASE_PASSWORD:stock}
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+stock:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  providers:
+    alpha-vantage:
+      base-url: ${ALPHA_VANTAGE_BASE_URL:https://www.alphavantage.co/query}
+      api-key: ${ALPHA_VANTAGE_API_KEY:}
+    open-dart:
+      base-url: ${OPENDART_BASE_URL:https://opendart.fss.or.kr/api}
+      api-key: ${OPENDART_API_KEY:}
+    sec:
+      base-url: ${SEC_SUBMISSIONS_BASE_URL:https://data.sec.gov}
+      user-agent: ${SEC_USER_AGENT:stock-be/0.1 contact=you@example.com}
+    perso:
+      base-url: ${PERSO_BASE_URL:https://api.perso.ai}
+      api-key: ${PERSO_API_KEY:}

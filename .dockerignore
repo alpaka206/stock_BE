@@ -1,0 +1,9 @@
+.git
+target
+build
+.gradle
+.idea
+.vscode
+.env
+.env.*
+!.env.example

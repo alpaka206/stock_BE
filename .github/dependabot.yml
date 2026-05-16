@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Seoul
+    groups:
+      spring-runtime:
+        patterns:
+          - "org.springframework*"
+          - "org.flywaydb*"
+          - "org.postgresql*"
