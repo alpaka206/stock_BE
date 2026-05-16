@@ -91,6 +91,11 @@ class WorkspaceApiTests {
 
     @Test
     void storesResearchSnapshotsAndPlatformJobs() throws Exception {
+        mockMvc.perform(get("/csrf"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").isString())
+            .andExpect(jsonPath("$.headerName").isString());
+
         upsertInstrument("TSLA", "Tesla", "US", "NASDAQ", "TSLA-US", "Automobiles", "USD");
 
         mockMvc.perform(post("/snapshots")
