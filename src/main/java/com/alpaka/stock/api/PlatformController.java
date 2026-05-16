@@ -5,6 +5,7 @@ import com.alpaka.stock.api.dto.PlatformDtos.AutomationWebhookResponse;
 import com.alpaka.stock.api.dto.PlatformDtos.LocalizationJobListResponse;
 import com.alpaka.stock.api.dto.PlatformDtos.LocalizationJobRequest;
 import com.alpaka.stock.api.dto.PlatformDtos.LocalizationJobResponse;
+import com.alpaka.stock.api.dto.PlatformDtos.LocalizationJobSubmitRequest;
 import com.alpaka.stock.api.dto.PlatformDtos.MediaAssetListResponse;
 import com.alpaka.stock.api.dto.PlatformDtos.MediaAssetRequest;
 import com.alpaka.stock.api.dto.PlatformDtos.MediaAssetResponse;
@@ -12,6 +13,7 @@ import com.alpaka.stock.api.dto.PlatformDtos.ReportScheduleListResponse;
 import com.alpaka.stock.api.dto.PlatformDtos.ReportScheduleRequest;
 import com.alpaka.stock.api.dto.PlatformDtos.ReportScheduleResponse;
 import com.alpaka.stock.api.dto.PlatformDtos.SubscriptionPlanListResponse;
+import com.alpaka.stock.service.PersoLocalizationService;
 import com.alpaka.stock.service.PlatformService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,9 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Platform", description = "구독, 리포트, 미디어, 현지화, 자동화 저장 API")
 public class PlatformController {
     private final PlatformService platformService;
+    private final PersoLocalizationService persoLocalizationService;
 
-    public PlatformController(PlatformService platformService) {
+    public PlatformController(PlatformService platformService, PersoLocalizationService persoLocalizationService) {
         this.platformService = platformService;
+        this.persoLocalizationService = persoLocalizationService;
     }
 
     @GetMapping("/subscription-plans")
@@ -74,6 +78,24 @@ public class PlatformController {
     @Operation(summary = "현지화 작업 요청 저장", description = "실제 Perso 호출 전, 요청과 상태를 서버 DB에 저장합니다.")
     public LocalizationJobResponse createLocalizationJob(@Valid @RequestBody LocalizationJobRequest request) {
         return platformService.createLocalizationJob(request);
+    }
+
+    @PostMapping("/localization-jobs/{jobId}/submit")
+    @Operation(summary = "Perso 작업 제출", description = "저장된 미디어 자료를 Perso 번역/더빙 작업으로 제출하고 provider job id를 저장합니다.")
+    public LocalizationJobResponse submitLocalizationJob(
+        @PathVariable java.util.UUID jobId,
+        @RequestBody(required = false) LocalizationJobSubmitRequest request
+    ) {
+        LocalizationJobSubmitRequest effectiveRequest = request == null
+            ? new LocalizationJobSubmitRequest(null, null, null, null)
+            : request;
+        return persoLocalizationService.submit(effectiveRequest, jobId);
+    }
+
+    @PostMapping("/localization-jobs/{jobId}/sync")
+    @Operation(summary = "Perso 작업 상태 동기화", description = "Perso 진행률과 산출물 링크를 확인해 서버 작업 상태를 갱신합니다.")
+    public LocalizationJobResponse syncLocalizationJob(@PathVariable java.util.UUID jobId) {
+        return persoLocalizationService.sync(jobId);
     }
 
     @PostMapping("/automation/webhooks/{source}")

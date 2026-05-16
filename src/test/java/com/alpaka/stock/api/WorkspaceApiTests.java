@@ -167,6 +167,41 @@ class WorkspaceApiTests {
             .andExpect(jsonPath("$.deliveryEmail", equalTo("user@example.com")))
             .andExpect(jsonPath("$.enabled", equalTo(true)));
 
+        mockMvc.perform(post("/reports/preview")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "userId": "local-user",
+                      "deliveryEmail": "user@example.com",
+                      "locale": "ko",
+                      "cadence": "WEEKLY",
+                      "symbols": ["TSLA"]
+                    }
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.subject").isString())
+            .andExpect(jsonPath("$.textBody").isString());
+
+        mockMvc.perform(post("/reports/send")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "userId": "local-user",
+                      "deliveryEmail": "user@example.com",
+                      "locale": "ko",
+                      "cadence": "WEEKLY",
+                      "symbols": ["TSLA"]
+                    }
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status", equalTo("READY")));
+
+        mockMvc.perform(get("/reports").param("userId", "local-user"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.deliveries", hasSize(1)));
+
         MvcResult mediaResult = mockMvc.perform(post("/media-assets")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -190,7 +225,7 @@ class WorkspaceApiTests {
             "$.id"
         );
 
-        mockMvc.perform(post("/localization-jobs")
+        MvcResult localizationResult = mockMvc.perform(post("/localization-jobs")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -201,7 +236,32 @@ class WorkspaceApiTests {
                     }
                     """.formatted(mediaId)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status", equalTo("REQUESTED")));
+            .andExpect(jsonPath("$.status", equalTo("REQUESTED")))
+            .andReturn();
+
+        String localizationJobId = com.jayway.jsonpath.JsonPath.read(
+            localizationResult.getResponse().getContentAsString(),
+            "$.id"
+        );
+
+        mockMvc.perform(post("/localization-jobs/%s/submit".formatted(localizationJobId))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andExpect(status().is(428))
+            .andExpect(jsonPath("$.message").isString());
+
+        mockMvc.perform(post("/provider-ingest/alpha-vantage/daily")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "symbol": "NVDA",
+                      "outputSize": 5
+                    }
+                    """))
+            .andExpect(status().is(428))
+            .andExpect(jsonPath("$.message").isString());
 
         mockMvc.perform(post("/automation/webhooks/n8n")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -59,7 +59,12 @@ stock:
       user-agent: ${SEC_USER_AGENT:stock-be/0.1 contact=you@example.com}
     perso:
       base-url: ${PERSO_BASE_URL:https://api.perso.ai}
+      portal-media-base-url: ${PERSO_PORTAL_MEDIA_BASE_URL:https://portal-media.perso.ai}
       api-key: ${PERSO_API_KEY:}
+      space-seq: ${PERSO_SPACE_SEQ:0}
+  reports:
+    email-sending-enabled: ${REPORT_EMAIL_SENDING_ENABLED:false}
+    from-email: ${REPORT_FROM_EMAIL:no-reply@stock-desk.local}
 
 springdoc:
   api-docs:
