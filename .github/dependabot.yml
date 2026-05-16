@@ -14,3 +14,7 @@ updates:
           - "org.springframework*"
           - "org.flywaydb*"
           - "org.postgresql*"
+    ignore:
+      - dependency-name: "org.springframework.boot:spring-boot-starter-parent"
+        versions:
+          - "4.x"
