@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,6 +26,7 @@ class WorkspaceApiTests {
     @Test
     void storesMaterialsAndServesOverviewFromBackend() throws Exception {
         mockMvc.perform(post("/instruments")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                     {
@@ -42,6 +44,7 @@ class WorkspaceApiTests {
             .andExpect(jsonPath("$.symbol", equalTo("NVDA")));
 
         mockMvc.perform(post("/materials")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                     {
@@ -70,6 +73,7 @@ class WorkspaceApiTests {
     @Test
     void storesResearchSnapshotsWithInstrumentRelation() throws Exception {
         mockMvc.perform(post("/instruments")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                     {
@@ -86,6 +90,7 @@ class WorkspaceApiTests {
             .andExpect(status().isOk());
 
         mockMvc.perform(post("/snapshots")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                     {
