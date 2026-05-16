@@ -41,4 +41,56 @@ public class MediaAsset extends BaseEntity {
 
     protected MediaAsset() {
     }
+
+    public MediaAsset(
+        Instrument instrument,
+        SourceMaterial material,
+        MediaKind kind,
+        String title,
+        String sourceUrl,
+        String provider,
+        String language,
+        OffsetDateTime publishedAt
+    ) {
+        this.instrument = instrument;
+        this.material = material;
+        this.kind = kind;
+        this.title = title;
+        this.sourceUrl = sourceUrl;
+        this.provider = provider;
+        this.language = language;
+        this.publishedAt = publishedAt;
+    }
+
+    public Instrument getInstrument() {
+        return instrument;
+    }
+
+    public SourceMaterial getMaterial() {
+        return material;
+    }
+
+    public MediaKind getKind() {
+        return kind;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public OffsetDateTime getPublishedAt() {
+        return publishedAt;
+    }
 }

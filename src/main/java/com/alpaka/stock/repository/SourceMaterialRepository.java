@@ -14,5 +14,16 @@ public interface SourceMaterialRepository extends JpaRepository<SourceMaterial, 
 
     List<SourceMaterial> findTop20ByKindOrderByPublishedAtDesc(SourceKind kind);
 
+    List<SourceMaterial> findTop50ByOrderByPublishedAtDesc();
+
+    List<SourceMaterial> findTop20ByInstrumentOrderByPublishedAtDesc(
+        com.alpaka.stock.domain.Instrument instrument
+    );
+
+    List<SourceMaterial> findTop20ByInstrumentAndKindOrderByPublishedAtDesc(
+        com.alpaka.stock.domain.Instrument instrument,
+        SourceKind kind
+    );
+
     long countByKind(SourceKind kind);
 }

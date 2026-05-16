@@ -18,7 +18,10 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/automation/webhooks/**", "/api/v1/automation/webhooks/**")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            )
             .cors(cors -> { })
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             .build();
