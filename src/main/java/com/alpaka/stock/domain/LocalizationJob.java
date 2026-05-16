@@ -43,4 +43,48 @@ public class LocalizationJob extends BaseEntity {
 
     protected LocalizationJob() {
     }
+
+    public LocalizationJob(MediaAsset mediaAsset, String provider, String targetLanguage) {
+        this.mediaAsset = mediaAsset;
+        this.provider = provider;
+        this.targetLanguage = targetLanguage;
+        this.status = LocalizationStatus.REQUESTED;
+        this.requestedAt = OffsetDateTime.now();
+    }
+
+    public MediaAsset getMediaAsset() {
+        return mediaAsset;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getTargetLanguage() {
+        return targetLanguage;
+    }
+
+    public LocalizationStatus getStatus() {
+        return status;
+    }
+
+    public String getDubbedAudioUrl() {
+        return dubbedAudioUrl;
+    }
+
+    public String getSubtitleUrl() {
+        return subtitleUrl;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public OffsetDateTime getRequestedAt() {
+        return requestedAt;
+    }
+
+    public OffsetDateTime getCompletedAt() {
+        return completedAt;
+    }
 }

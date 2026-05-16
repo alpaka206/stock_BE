@@ -77,6 +77,18 @@ public class PriceBar extends BaseEntity {
         return closePrice;
     }
 
+    public BigDecimal getOpenPrice() {
+        return openPrice;
+    }
+
+    public BigDecimal getHighPrice() {
+        return highPrice;
+    }
+
+    public BigDecimal getLowPrice() {
+        return lowPrice;
+    }
+
     public BigDecimal getVolume() {
         return volume;
     }
@@ -87,5 +99,21 @@ public class PriceBar extends BaseEntity {
 
     public String getSourceKey() {
         return sourceKey;
+    }
+
+    public void updatePrices(
+        BigDecimal openPrice,
+        BigDecimal highPrice,
+        BigDecimal lowPrice,
+        BigDecimal closePrice,
+        BigDecimal volume,
+        String sourceKey
+    ) {
+        this.openPrice = openPrice;
+        this.highPrice = highPrice;
+        this.lowPrice = lowPrice;
+        this.closePrice = closePrice;
+        this.volume = volume;
+        this.sourceKey = sourceKey;
     }
 }

@@ -28,4 +28,44 @@ public class SubscriptionPlan extends BaseEntity {
 
     protected SubscriptionPlan() {
     }
+
+    public SubscriptionPlan(
+        String code,
+        String name,
+        BigDecimal monthlyPrice,
+        String currency,
+        String featureLimits,
+        boolean active
+    ) {
+        this.code = code;
+        this.name = name;
+        this.monthlyPrice = monthlyPrice;
+        this.currency = currency;
+        this.featureLimits = featureLimits;
+        this.active = active;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getMonthlyPrice() {
+        return monthlyPrice;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public String getFeatureLimits() {
+        return featureLimits;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
 }

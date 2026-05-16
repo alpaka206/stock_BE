@@ -124,4 +124,8 @@ public class SourceMaterial extends BaseEntity {
     public OffsetDateTime getPublishedAt() {
         return publishedAt;
     }
+
+    public OffsetDateTime getFetchedAt() {
+        return fetchedAt;
+    }
 }

@@ -15,4 +15,8 @@ public interface InstrumentRepository extends JpaRepository<Instrument, UUID> {
         String symbol,
         String name
     );
+
+    List<Instrument> findTop100ByActiveTrueOrderBySymbolAsc();
+
+    List<Instrument> findTop12BySectorIgnoreCaseAndActiveTrueOrderBySymbolAsc(String sector);
 }

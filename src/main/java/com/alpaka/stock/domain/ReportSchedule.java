@@ -30,4 +30,52 @@ public class ReportSchedule extends BaseEntity {
 
     protected ReportSchedule() {
     }
+
+    public ReportSchedule(
+        String userId,
+        String locale,
+        ReportCadence cadence,
+        String deliveryEmail,
+        String timezone,
+        boolean enabled
+    ) {
+        this.userId = userId;
+        this.locale = locale;
+        this.cadence = cadence;
+        this.deliveryEmail = deliveryEmail;
+        this.timezone = timezone;
+        this.enabled = enabled;
+    }
+
+    public void update(String locale, ReportCadence cadence, String deliveryEmail, String timezone, boolean enabled) {
+        this.locale = locale;
+        this.cadence = cadence;
+        this.deliveryEmail = deliveryEmail;
+        this.timezone = timezone;
+        this.enabled = enabled;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public ReportCadence getCadence() {
+        return cadence;
+    }
+
+    public String getDeliveryEmail() {
+        return deliveryEmail;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
 }

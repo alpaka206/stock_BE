@@ -17,3 +17,6 @@ spring:
 stock:
   cors:
     allowed-origins: http://localhost:3000
+  auth:
+    jwt-secret: test-change-me-minimum-32-characters
+    dev-login-enabled: true
